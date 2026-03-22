@@ -8,15 +8,17 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0d0d0f;
-      --surface:   #141418;
-      --border:    #2a2a32;
-      --text:      #e8e8ed;
-      --muted:     #7a7a8c;
+      --bg:        #09090b;
+      --surface:   #111113;
+      --surface2:  #18181b;
+      --border:    rgba(255,255,255,0.06);
+      --border-h:  rgba(255,255,255,0.1);
+      --text:      #fafafa;
+      --text-sec:  rgba(255,255,255,0.5);
+      --text-ter:  rgba(255,255,255,0.3);
       --accent:    #a78bfa;
-      --accent2:   #60a5fa;
-      --green:     #4ade80;
-      --code-bg:   #1a1a22;
+      --green:     #34d399;
+      --mono:      "SF Mono", "Fira Code", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
     }
 
     html { scroll-behavior: smooth; }
@@ -24,69 +26,87 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, Helvetica, Arial, sans-serif;
       font-size: 16px;
       line-height: 1.6;
       min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* ── Layout ── */
     .container {
-      max-width: 720px;
+      max-width: 680px;
       margin: 0 auto;
       padding: 0 24px;
+    }
+
+    /* ── Reveal animation ── */
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    [data-reveal].visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     /* ── Hero ── */
     .hero {
       text-align: center;
-      padding: 100px 0 72px;
-    }
-
-    .hero-emoji {
-      font-size: 64px;
-      line-height: 1;
-      margin-bottom: 24px;
-      display: block;
+      padding: 120px 0 80px;
     }
 
     .hero h1 {
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      line-height: 1.15;
+      color: var(--text);
       margin-bottom: 20px;
     }
 
     .hero .tagline {
-      font-size: 1.2rem;
-      color: var(--muted);
-      max-width: 520px;
-      margin: 0 auto 48px;
+      font-size: 1.1rem;
+      color: var(--text-sec);
+      max-width: 420px;
+      margin: 0 auto 56px;
       line-height: 1.7;
+      font-weight: 400;
     }
 
     /* ── Install box ── */
     .install-box {
-      background: var(--code-bg);
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px 24px;
+      border-radius: 10px;
+      padding: 16px 20px;
       display: flex;
       align-items: center;
-      gap: 16px;
-      max-width: 600px;
+      gap: 12px;
+      max-width: 560px;
       margin: 0 auto;
       position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .install-box:hover {
+      border-color: var(--border-h);
+    }
+
+    .install-prompt {
+      color: var(--text-ter);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      user-select: none;
     }
 
     .install-code {
-      font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+      font-family: var(--mono);
       font-size: 0.85rem;
-      color: var(--green);
+      color: var(--text-sec);
       flex: 1;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -95,110 +115,167 @@
     }
 
     .copy-btn {
-      background: var(--surface);
+      background: transparent;
       border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 8px 16px;
+      color: var(--text-ter);
+      padding: 6px 14px;
       border-radius: 6px;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       cursor: pointer;
       transition: all 0.15s;
       white-space: nowrap;
       font-family: inherit;
       flex-shrink: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 500;
     }
 
     .copy-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
+      border-color: var(--border-h);
+      color: var(--text-sec);
     }
 
     .copy-btn.copied {
-      border-color: var(--green);
+      border-color: rgba(52,211,153,0.3);
       color: var(--green);
     }
 
     /* ── Sections ── */
     section {
-      padding: 72px 0;
-      border-top: 1px solid var(--border);
+      padding: 80px 0;
+    }
+
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
     }
 
     section h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 32px;
-      letter-spacing: -0.02em;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-ter);
+      margin-bottom: 40px;
     }
 
     /* ── Feature list ── */
     .features {
       display: grid;
-      gap: 20px;
+      gap: 1px;
+      background: var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
     }
 
     .feature {
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 24px;
+      padding: 28px 28px;
       display: flex;
       gap: 20px;
       align-items: flex-start;
-      transition: border-color 0.2s;
+      transition: background 0.2s;
     }
 
     .feature:hover {
-      border-color: #3a3a4a;
+      background: var(--surface2);
     }
 
     .feature-icon {
-      font-size: 1.5rem;
-      line-height: 1;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
-      margin-top: 2px;
+      font-size: 1rem;
     }
 
     .feature h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 6px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: var(--text);
     }
 
     .feature p {
-      font-size: 0.92rem;
-      color: var(--muted);
+      font-size: 0.88rem;
+      color: var(--text-sec);
       line-height: 1.6;
+    }
+
+    /* ── Steps ── */
+    .steps {
+      display: grid;
+      gap: 32px;
+    }
+
+    .step {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--border-h);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-ter);
+      flex-shrink: 0;
+      font-family: var(--mono);
+    }
+
+    .step-body h3 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .step-body p {
+      font-size: 0.88rem;
+      color: var(--text-sec);
+      line-height: 1.6;
+    }
+
+    .step-body code {
+      font-family: var(--mono);
+      font-size: 0.82em;
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+      padding: 2px 6px;
+      color: var(--text-sec);
     }
 
     /* ── Requirements ── */
     .requirements-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
     }
 
     .req-item {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      padding: 16px 18px;
+      font-size: 0.88rem;
+      color: var(--text-sec);
+      transition: border-color 0.2s;
     }
 
-    .req-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--accent);
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .req-item span {
-      font-size: 0.92rem;
-      color: var(--muted);
+    .req-item:hover {
+      border-color: var(--border-h);
     }
 
     .req-item strong {
@@ -206,155 +283,111 @@
       font-weight: 500;
     }
 
-    /* ── How it works ── */
-    .steps {
-      display: grid;
-      gap: 16px;
-      counter-reset: steps;
-    }
-
-    .step {
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-      counter-increment: steps;
-    }
-
-    .step-num {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-
-    .step-num::before {
-      content: counter(steps);
-    }
-
-    .step-body h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .step-body p {
-      font-size: 0.92rem;
-      color: var(--muted);
-    }
-
     /* ── Footer ── */
     footer {
-      border-top: 1px solid var(--border);
-      padding: 40px 0;
+      padding: 48px 0;
       text-align: center;
     }
 
     .footer-links {
       display: flex;
       justify-content: center;
-      gap: 24px;
+      gap: 32px;
       flex-wrap: wrap;
     }
 
     .footer-links a {
-      color: var(--muted);
+      color: var(--text-ter);
       text-decoration: none;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       transition: color 0.15s;
+      font-weight: 400;
     }
 
     .footer-links a:hover {
-      color: var(--accent);
+      color: var(--text-sec);
     }
 
     .footer-credit {
-      margin-top: 20px;
-      font-size: 0.82rem;
-      color: #44444e;
+      margin-top: 24px;
+      font-size: 0.78rem;
+      color: var(--text-ter);
     }
 
-    /* ── Misc ── */
-    code {
-      font-family: "SF Mono", "Fira Code", Consolas, monospace;
-      font-size: 0.875em;
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 2px 6px;
-      color: var(--accent);
+    /* ── Responsive ── */
+    @media (max-width: 560px) {
+      .requirements-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero { padding: 80px 0 56px; }
+      .install-box { flex-direction: column; align-items: stretch; text-align: left; }
+      .copy-btn { align-self: flex-start; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ── Hero ─────────────────────────────────────────────────────────────── -->
+  <!-- ── Hero ── -->
   <div class="container">
-    <div class="hero">
-      <span class="hero-emoji">🧬</span>
-      <h1>Digital Clone Maker</h1>
+    <div class="hero" data-reveal>
+      <h1>Make an AI clone<br>of yourself</h1>
       <p class="tagline">
-        Make an AI clone of yourself.<br>
-        Thinks like you, talks like you, builds like you.
+        Thinks like you. Talks like you. Builds like you.<br>
+        A 10-minute setup, then it learns forever.
       </p>
 
       <div class="install-box">
+        <span class="install-prompt">$</span>
         <span class="install-code" id="install-cmd">curl -fsSL https://tn0123.github.io/clone-engine/install.sh | bash</span>
         <button class="copy-btn" id="copy-btn" onclick="copyInstall()">Copy</button>
       </div>
     </div>
   </div>
 
-  <!-- ── What you get ──────────────────────────────────────────────────────── -->
+  <!-- ── What you get ── -->
   <div class="container">
+    <div class="section-divider"></div>
     <section>
-      <h2>What you get</h2>
-      <div class="features">
+      <h2 data-reveal>What you get</h2>
+      <div class="features" data-reveal>
 
         <div class="feature">
-          <span class="feature-icon">🧠</span>
+          <div class="feature-icon">&#x1f9e0;</div>
           <div>
             <h3>Your identity, encoded</h3>
-            <p>A 10-minute setup interview captures how you think, communicate, and make decisions — not just your CV. High-signal questions that surface your actual personality.</p>
+            <p>A setup interview captures how you think, communicate, and make decisions. High-signal questions that surface your actual personality.</p>
           </div>
         </div>
 
         <div class="feature">
-          <span class="feature-icon">💬</span>
+          <div class="feature-icon">&#x1f4ac;</div>
           <div>
             <h3>Persistent memory</h3>
-            <p>Every conversation is indexed. The clone recalls past decisions, projects, and context — so you never repeat yourself and it always knows where you left off.</p>
+            <p>Every conversation is indexed. The clone recalls past decisions, projects, and context so you never repeat yourself.</p>
           </div>
         </div>
 
         <div class="feature">
-          <span class="feature-icon">⚡</span>
+          <div class="feature-icon">&#x26a1;</div>
           <div>
             <h3>Works inside Claude Code or Codex</h3>
-            <p>Runs as a custom CLI command in your terminal. Works with your existing AI subscription — no new API keys, no new accounts.</p>
+            <p>Runs as a CLI command in your terminal. Uses your existing AI subscription. No new API keys or accounts.</p>
           </div>
         </div>
 
         <div class="feature">
-          <span class="feature-icon">🔁</span>
+          <div class="feature-icon">&#x1f504;</div>
           <div>
-            <h3>Self-updating engine</h3>
-            <p>The engine checks for updates automatically and applies them without touching your profile or config. Always on the latest version with zero effort.</p>
+            <h3>Self-updating</h3>
+            <p>The engine checks for updates automatically and applies them without touching your profile. Always current, zero effort.</p>
           </div>
         </div>
 
         <div class="feature">
-          <span class="feature-icon">🔒</span>
+          <div class="feature-icon">&#x1f512;</div>
           <div>
             <h3>Fully local</h3>
-            <p>Your identity profile lives on your machine. Nothing is uploaded to any external service. You own your data.</p>
+            <p>Your identity profile lives on your machine. Nothing is uploaded anywhere. You own your data.</p>
           </div>
         </div>
 
@@ -362,70 +395,69 @@
     </section>
   </div>
 
-  <!-- ── How it works ──────────────────────────────────────────────────────── -->
+  <!-- ── How it works ── -->
   <div class="container">
+    <div class="section-divider"></div>
     <section>
-      <h2>How it works</h2>
-      <div class="steps">
+      <h2 data-reveal>How it works</h2>
+      <div class="steps" data-reveal>
         <div class="step">
-          <div class="step-num"></div>
+          <div class="step-num">1</div>
           <div class="step-body">
             <h3>Install in one command</h3>
-            <p>The install script detects your platform, checks dependencies, and sets up the engine at <code>~/.clone-engine</code>.</p>
+            <p>The script detects your platform, checks dependencies, and sets up the engine at <code>~/.clone-engine</code>.</p>
           </div>
         </div>
         <div class="step">
-          <div class="step-num"></div>
+          <div class="step-num">2</div>
           <div class="step-body">
             <h3>Answer the setup interview</h3>
-            <p>10–15 minutes of honest questions about how you think, talk, disagree, and build. The answers become your clone's personality profile.</p>
+            <p>10 minutes of questions about how you think, talk, disagree, and build. Your answers become the clone's personality.</p>
           </div>
         </div>
         <div class="step">
-          <div class="step-num"></div>
+          <div class="step-num">3</div>
           <div class="step-body">
-            <h3>Get a personalized CLI command</h3>
-            <p>A shell alias is added for your name (e.g. <code>alex</code>). Run it from any directory to start a session with your clone.</p>
+            <h3>Get your CLI command</h3>
+            <p>A shell alias is added for your name (e.g. <code>alex</code>). Run it from any directory to start a session.</p>
           </div>
         </div>
         <div class="step">
-          <div class="step-num"></div>
+          <div class="step-num">4</div>
           <div class="step-body">
             <h3>Memory compounds over time</h3>
-            <p>Every session is stored and indexed. The longer you use it, the more context it carries — decisions, code, conversations.</p>
+            <p>Every session is stored and indexed. The longer you use it, the more context it carries.</p>
           </div>
         </div>
       </div>
     </section>
   </div>
 
-  <!-- ── Requirements ──────────────────────────────────────────────────────── -->
+  <!-- ── Requirements ── -->
   <div class="container">
+    <div class="section-divider"></div>
     <section>
-      <h2>Requirements</h2>
-      <div class="requirements-grid">
+      <h2 data-reveal>Requirements</h2>
+      <div class="requirements-grid" data-reveal>
         <div class="req-item">
-          <div class="req-dot"></div>
-          <span><strong>Claude Code</strong> or <strong>OpenAI Codex</strong> CLI</span>
+          <strong>Claude Code</strong> or <strong>Codex</strong> CLI
         </div>
         <div class="req-item">
-          <div class="req-dot"></div>
-          <span>Active <strong>API key</strong> for your chosen CLI</span>
+          Active <strong>API key</strong> for your CLI
         </div>
         <div class="req-item">
-          <div class="req-dot"></div>
-          <span><strong>Python 3.10+</strong> installed</span>
+          <strong>Python 3.10+</strong>
         </div>
         <div class="req-item">
-          <div class="req-dot"></div>
-          <span><strong>macOS</strong> (arm64 or x86) or <strong>Linux</strong> (x86_64)</span>
+          <strong>macOS</strong> or <strong>Linux</strong>
         </div>
       </div>
     </section>
   </div>
 
-  <!-- ── Footer ────────────────────────────────────────────────────────────── -->
+  <!-- ── Footer ── -->
   <div class="container">
+    <div class="section-divider"></div>
     <footer>
       <div class="footer-links">
         <a href="https://github.com/TN0123/clone-engine" target="_blank" rel="noopener">GitHub</a>
@@ -433,7 +465,7 @@
         <a href="https://github.com/TN0123/clone-engine/issues" target="_blank" rel="noopener">Issues</a>
         <a href="https://github.com/TN0123/clone-engine/blob/main/README.md" target="_blank" rel="noopener">Docs</a>
       </div>
-      <p class="footer-credit">Digital Clone Maker &mdash; free to use</p>
+      <p class="footer-credit">Digital Clone Maker</p>
     </footer>
   </div>
 
@@ -443,14 +475,13 @@
       const btn = document.getElementById('copy-btn');
 
       navigator.clipboard.writeText(cmd).then(() => {
-        btn.textContent = 'Copied!';
+        btn.textContent = 'Copied';
         btn.classList.add('copied');
         setTimeout(() => {
           btn.textContent = 'Copy';
           btn.classList.remove('copied');
         }, 2000);
       }).catch(() => {
-        // Fallback for older browsers
         const el = document.createElement('textarea');
         el.value = cmd;
         el.style.position = 'fixed';
@@ -459,7 +490,7 @@
         el.select();
         document.execCommand('copy');
         document.body.removeChild(el);
-        btn.textContent = 'Copied!';
+        btn.textContent = 'Copied';
         btn.classList.add('copied');
         setTimeout(() => {
           btn.textContent = 'Copy';
@@ -467,6 +498,18 @@
         }, 2000);
       });
     }
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
   </script>
 
 </body>
