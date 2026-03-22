@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Clone Maker</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d0d0f;
+      --surface:   #141418;
+      --border:    #2a2a32;
+      --text:      #e8e8ed;
+      --muted:     #7a7a8c;
+      --accent:    #a78bfa;
+      --accent2:   #60a5fa;
+      --green:     #4ade80;
+      --code-bg:   #1a1a22;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 100px 0 72px;
+    }
+
+    .hero-emoji {
+      font-size: 64px;
+      line-height: 1;
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+
+    .hero .tagline {
+      font-size: 1.2rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+    }
+
+    /* ── Install box ── */
+    .install-box {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .install-code {
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+      font-size: 0.85rem;
+      color: var(--green);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      user-select: all;
+    }
+
+    .copy-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+      font-family: inherit;
+      flex-shrink: 0;
+    }
+
+    .copy-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .copy-btn.copied {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    /* ── Sections ── */
+    section {
+      padding: 72px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    section h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 32px;
+      letter-spacing: -0.02em;
+    }
+
+    /* ── Feature list ── */
+    .features {
+      display: grid;
+      gap: 20px;
+    }
+
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+
+    .feature:hover {
+      border-color: #3a3a4a;
+    }
+
+    .feature-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .feature h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .feature p {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── Requirements ── */
+    .requirements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .req-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .req-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .req-item span {
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .req-item strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* ── How it works ── */
+    .steps {
+      display: grid;
+      gap: 16px;
+      counter-reset: steps;
+    }
+
+    .step {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      counter-increment: steps;
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .step-num::before {
+      content: counter(steps);
+    }
+
+    .step-body h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .step-body p {
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    .footer-credit {
+      margin-top: 20px;
+      font-size: 0.82rem;
+      color: #44444e;
+    }
+
+    /* ── Misc ── */
+    code {
+      font-family: "SF Mono", "Fira Code", Consolas, monospace;
+      font-size: 0.875em;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 6px;
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Hero ─────────────────────────────────────────────────────────────── -->
+  <div class="container">
+    <div class="hero">
+      <span class="hero-emoji">🧬</span>
+      <h1>Digital Clone Maker</h1>
+      <p class="tagline">
+        Make an AI clone of yourself.<br>
+        Thinks like you, talks like you, builds like you.
+      </p>
+
+      <div class="install-box">
+        <span class="install-code" id="install-cmd">curl -fsSL https://tn0123.github.io/clone-engine/install.sh | bash</span>
+        <button class="copy-btn" id="copy-btn" onclick="copyInstall()">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── What you get ──────────────────────────────────────────────────────── -->
+  <div class="container">
+    <section>
+      <h2>What you get</h2>
+      <div class="features">
+
+        <div class="feature">
+          <span class="feature-icon">🧠</span>
+          <div>
+            <h3>Your identity, encoded</h3>
+            <p>A 10-minute setup interview captures how you think, communicate, and make decisions — not just your CV. High-signal questions that surface your actual personality.</p>
+          </div>
+        </div>
+
+        <div class="feature">
+          <span class="feature-icon">💬</span>
+          <div>
+            <h3>Persistent memory</h3>
+            <p>Every conversation is indexed. The clone recalls past decisions, projects, and context — so you never repeat yourself and it always knows where you left off.</p>
+          </div>
+        </div>
+
+        <div class="feature">
+          <span class="feature-icon">⚡</span>
+          <div>
+            <h3>Works inside Claude Code or Codex</h3>
+            <p>Runs as a custom CLI command in your terminal. Works with your existing AI subscription — no new API keys, no new accounts.</p>
+          </div>
+        </div>
+
+        <div class="feature">
+          <span class="feature-icon">🔁</span>
+          <div>
+            <h3>Self-updating engine</h3>
+            <p>The engine checks for updates automatically and applies them without touching your profile or config. Always on the latest version with zero effort.</p>
+          </div>
+        </div>
+
+        <div class="feature">
+          <span class="feature-icon">🔒</span>
+          <div>
+            <h3>Fully local</h3>
+            <p>Your identity profile lives on your machine. Nothing is uploaded to any external service. You own your data.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- ── How it works ──────────────────────────────────────────────────────── -->
+  <div class="container">
+    <section>
+      <h2>How it works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h3>Install in one command</h3>
+            <p>The install script detects your platform, checks dependencies, and sets up the engine at <code>~/.clone-engine</code>.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h3>Answer the setup interview</h3>
+            <p>10–15 minutes of honest questions about how you think, talk, disagree, and build. The answers become your clone's personality profile.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h3>Get a personalized CLI command</h3>
+            <p>A shell alias is added for your name (e.g. <code>alex</code>). Run it from any directory to start a session with your clone.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h3>Memory compounds over time</h3>
+            <p>Every session is stored and indexed. The longer you use it, the more context it carries — decisions, code, conversations.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ── Requirements ──────────────────────────────────────────────────────── -->
+  <div class="container">
+    <section>
+      <h2>Requirements</h2>
+      <div class="requirements-grid">
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <span><strong>Claude Code</strong> or <strong>OpenAI Codex</strong> CLI</span>
+        </div>
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <span>Active <strong>API key</strong> for your chosen CLI</span>
+        </div>
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <span><strong>Python 3.10+</strong> installed</span>
+        </div>
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <span><strong>macOS</strong> (arm64 or x86) or <strong>Linux</strong> (x86_64)</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ── Footer ────────────────────────────────────────────────────────────── -->
+  <div class="container">
+    <footer>
+      <div class="footer-links">
+        <a href="https://github.com/TN0123/clone-engine" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/TN0123/clone-engine/releases" target="_blank" rel="noopener">Releases</a>
+        <a href="https://github.com/TN0123/clone-engine/issues" target="_blank" rel="noopener">Issues</a>
+        <a href="https://github.com/TN0123/clone-engine/blob/main/README.md" target="_blank" rel="noopener">Docs</a>
+      </div>
+      <p class="footer-credit">Digital Clone Maker &mdash; free to use</p>
+    </footer>
+  </div>
+
+  <script>
+    function copyInstall() {
+      const cmd = document.getElementById('install-cmd').textContent;
+      const btn = document.getElementById('copy-btn');
+
+      navigator.clipboard.writeText(cmd).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(() => {
+        // Fallback for older browsers
+        const el = document.createElement('textarea');
+        el.value = cmd;
+        el.style.position = 'fixed';
+        el.style.opacity = '0';
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+
+</body>
+</html>
