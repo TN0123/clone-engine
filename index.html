@@ -95,11 +95,10 @@
 
     .hero-glow {
       position: absolute;
-      top: -20%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 800px;
-      height: 600px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: radial-gradient(ellipse at center, rgba(255,255,255,0.03) 0%, transparent 70%);
       pointer-events: none;
     }
@@ -631,8 +630,8 @@
       const nodes = [];
       const edges = [];
       const pulses = [];
-      const NODE_COUNT = 90;
-      const CONNECT_DIST = 200;
+      const NODE_COUNT = 200;
+      const CONNECT_DIST = 140;
       const green = [50, 215, 75];
 
       function resize() {
@@ -643,8 +642,7 @@
         ch = canvas.offsetHeight;
       }
 
-      // Seed deterministic but organic-looking node positions
-      // Clustered toward center with some spread
+      // Seed evenly distributed nodes using Poisson disk sampling
       function seed() {
         nodes.length = 0;
         edges.length = 0;
@@ -652,45 +650,31 @@
           return function() { s = (s * 16807 + 0) % 2147483647; return s / 2147483647; };
         })(42);
 
-        // Brain silhouette (side profile): rounded dome on top,
-        // frontal lobe bulges forward, tapers back and down to brainstem,
-        // flatter bottom with slight cerebellum bump at rear
-        function inBrain(nx, ny) {
-          // nx: -1 (back) to 1 (front), ny: -1 (top) to 1 (bottom)
-          // Shift center slightly back so frontal lobe extends forward
-          const bx = nx;
+        // Poisson disk sampling for even distribution
+        const minDist = Math.sqrt((cw * ch) / NODE_COUNT) * 0.75;
+        const placed = [];
+        const pad = -20; // slight bleed past edges
 
-          // Nearly symmetrical tall oval, with just a hint of
-          // frontal lobe (right) and slight taper at back-bottom (left)
-          const topCurve = -0.88;
-          const bottomCurve = 0.58;
-
-          if (ny < topCurve || ny > bottomCurve) return false;
-
-          const yNorm = (ny - topCurve) / (bottomCurve - topCurve);
-          const widthEnvelope = Math.sin(yNorm * Math.PI) * 0.92;
-
-          // Very slight frontal bulge on the right
-          const frontBulge = (bx > 0) ? 0.06 * Math.exp(-ny * ny * 3) : 0;
-          // Very subtle taper at back-bottom only
-          const backTaper = (ny > 0.4 && bx < -0.5) ? 0.06 * (ny - 0.4) * Math.abs(bx + 0.5) : 0;
-
-          return Math.abs(bx) - frontBulge + backTaper < widthEnvelope;
-        }
-
-        for (let i = 0; i < NODE_COUNT; i++) {
-          let bx, by;
-          for (let tries = 0; tries < 50; tries++) {
-            const nx = (rand() - 0.5) * 2;
-            const ny = (rand() - 0.5) * 2;
-            if (inBrain(nx, ny)) {
-              bx = cw / 2 + nx * cw * 0.48;
-              by = ch / 2 + ny * ch * 0.55;
+        for (let attempts = 0; attempts < NODE_COUNT * 30 && placed.length < NODE_COUNT; attempts++) {
+          const cx = pad + rand() * (cw - 2 * pad);
+          const cy = pad + rand() * (ch - 2 * pad);
+          let tooClose = false;
+          for (let j = 0; j < placed.length; j++) {
+            const dx = placed[j].x - cx;
+            const dy = placed[j].y - cy;
+            if (dx * dx + dy * dy < minDist * minDist) {
+              tooClose = true;
               break;
             }
-            bx = rand() * cw;
-            by = rand() * ch;
           }
+          if (!tooClose) {
+            placed.push({ x: cx, y: cy });
+          }
+        }
+
+        for (let i = 0; i < placed.length; i++) {
+          const bx = placed[i].x;
+          const by = placed[i].y;
           nodes.push({
             x: bx,
             y: by,
@@ -700,7 +684,7 @@
             phase: rand() * Math.PI * 2,
             speed: 0.2 + rand() * 0.4,
             drift: 8 + rand() * 16,
-            hub: rand() > 0.85, // ~15% are hub nodes
+            hub: rand() > 0.85,
           });
         }
 
