@@ -16,8 +16,7 @@
       --text:      #fafafa;
       --text-sec:  rgba(255,255,255,0.5);
       --text-ter:  rgba(255,255,255,0.3);
-      --accent:    #a78bfa;
-      --green:     #34d399;
+      --green:     #32d74b;
       --mono:      "SF Mono", "Fira Code", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
     }
 
@@ -32,20 +31,21 @@
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
     }
 
     /* ── Layout ── */
     .container {
-      max-width: 680px;
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 40px;
     }
 
-    /* ── Reveal animation ── */
+    /* ── Reveal animations ── */
     [data-reveal] {
       opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      transform: translateY(24px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     [data-reveal].visible {
@@ -53,25 +53,86 @@
       transform: translateY(0);
     }
 
+    /* Staggered children */
+    [data-reveal-stagger] > * {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-reveal-stagger].visible > * {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    [data-reveal-stagger].visible > *:nth-child(1) { transition-delay: 0s; }
+    [data-reveal-stagger].visible > *:nth-child(2) { transition-delay: 0.08s; }
+    [data-reveal-stagger].visible > *:nth-child(3) { transition-delay: 0.16s; }
+    [data-reveal-stagger].visible > *:nth-child(4) { transition-delay: 0.24s; }
+    [data-reveal-stagger].visible > *:nth-child(5) { transition-delay: 0.32s; }
+    [data-reveal-stagger].visible > *:nth-child(6) { transition-delay: 0.40s; }
+
     /* ── Hero ── */
+    .hero-wrapper {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+
+    .hero-canvas.loaded {
+      opacity: 1;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(ellipse at center, rgba(255,255,255,0.03) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
     .hero {
       text-align: center;
-      padding: 120px 0 80px;
+      padding: 180px 0 140px;
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
     }
 
     .hero h1 {
-      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-size: clamp(3rem, 7vw, 5.5rem);
       font-weight: 600;
-      letter-spacing: -0.04em;
-      line-height: 1.15;
+      letter-spacing: -0.045em;
+      line-height: 1.05;
       color: var(--text);
-      margin-bottom: 20px;
+      margin-bottom: 28px;
+    }
+
+    .hero h1 .hero-gradient {
+      background: linear-gradient(180deg, #fafafa 0%, rgba(255,255,255,0.7) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .hero .tagline {
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       color: var(--text-sec);
-      max-width: 420px;
+      max-width: 480px;
       margin: 0 auto 56px;
       line-height: 1.7;
       font-weight: 400;
@@ -86,7 +147,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      max-width: 560px;
+      max-width: 580px;
       margin: 0 auto;
       position: relative;
       transition: border-color 0.2s;
@@ -97,7 +158,7 @@
     }
 
     .install-prompt {
-      color: var(--text-ter);
+      color: var(--green);
       font-family: var(--mono);
       font-size: 0.85rem;
       user-select: none;
@@ -143,7 +204,7 @@
 
     /* ── Sections ── */
     section {
-      padding: 80px 0;
+      padding: 100px 0;
     }
 
     .section-divider {
@@ -152,32 +213,50 @@
       background: var(--border);
     }
 
-    section h2 {
+    .section-header {
+      margin-bottom: 56px;
+    }
+
+    .section-header h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .section-header p {
+      font-size: 1.05rem;
+      color: var(--text-sec);
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    .section-label {
       font-size: 0.8rem;
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       color: var(--text-ter);
-      margin-bottom: 40px;
+      margin-bottom: 16px;
     }
 
-    /* ── Feature list ── */
-    .features {
+    /* ── Feature grid ── */
+    .features-grid {
       display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 1px;
       background: var(--border);
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
       border: 1px solid var(--border);
     }
 
     .feature {
       background: var(--surface);
-      padding: 28px 28px;
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-      transition: background 0.2s;
+      padding: 36px 32px;
+      transition: background 0.3s ease;
     }
 
     .feature:hover {
@@ -185,21 +264,39 @@
     }
 
     .feature-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.04);
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      font-size: 1rem;
+      margin-bottom: 20px;
+      color: var(--text-sec);
+      transition: border-color 0.3s ease, color 0.3s ease;
+    }
+
+    .feature:hover .feature-icon {
+      border-color: var(--border-h);
+      color: var(--text);
+    }
+
+    .feature-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .feature h3 {
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 500;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
       color: var(--text);
     }
 
@@ -210,45 +307,55 @@
     }
 
     /* ── Steps ── */
-    .steps {
+    .steps-grid {
       display: grid;
-      gap: 32px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
     }
 
-    .step {
-      display: flex;
-      gap: 24px;
-      align-items: flex-start;
+    .step-card {
+      padding: 32px 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .step-card:hover {
+      border-color: var(--border-h);
+      transform: translateY(-2px);
     }
 
     .step-num {
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      border: 1px solid var(--border-h);
+      background: rgba(50,215,75,0.06);
+      border: 1px solid rgba(50,215,75,0.15);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--text-ter);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--green);
       flex-shrink: 0;
       font-family: var(--mono);
+      margin-bottom: 20px;
     }
 
-    .step-body h3 {
-      font-size: 0.95rem;
+    .step-card h3 {
+      font-size: 1rem;
       font-weight: 500;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
     }
 
-    .step-body p {
+    .step-card p {
       font-size: 0.88rem;
       color: var(--text-sec);
       line-height: 1.6;
     }
 
-    .step-body code {
+    .step-card code {
       font-family: var(--mono);
       font-size: 0.82em;
       background: rgba(255,255,255,0.06);
@@ -258,20 +365,23 @@
     }
 
     /* ── Requirements ── */
-    .requirements-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+    .requirements-list {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
     .req-item {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px 18px;
+      border-radius: 100px;
+      padding: 12px 24px;
       font-size: 0.88rem;
       color: var(--text-sec);
       transition: border-color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .req-item:hover {
@@ -281,6 +391,14 @@
     .req-item strong {
       color: var(--text);
       font-weight: 500;
+    }
+
+    .req-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
     }
 
     /* ── Footer ── */
@@ -315,11 +433,31 @@
     }
 
     /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
     @media (max-width: 560px) {
-      .requirements-grid {
+      .container {
+        padding: 0 20px;
+      }
+      .features-grid {
         grid-template-columns: 1fr;
       }
-      .hero { padding: 80px 0 56px; }
+      .steps-grid {
+        grid-template-columns: 1fr;
+      }
+      .requirements-list {
+        flex-direction: column;
+      }
+      .hero { padding: 120px 0 80px; }
+      .hero h1 { font-size: 2.4rem; }
+      section { padding: 72px 0; }
       .install-box { flex-direction: column; align-items: stretch; text-align: left; }
       .copy-btn { align-self: flex-start; }
     }
@@ -328,18 +466,22 @@
 <body>
 
   <!-- ── Hero ── -->
-  <div class="container">
-    <div class="hero" data-reveal>
-      <h1>Make an AI clone<br>of yourself</h1>
-      <p class="tagline">
-        Thinks like you. Talks like you. Builds like you.<br>
-        A 10-minute setup, then it learns forever.
-      </p>
+  <div class="hero-wrapper">
+    <canvas class="hero-canvas" id="hero-canvas"></canvas>
+    <div class="hero-glow"></div>
+    <div class="container">
+      <div class="hero" data-reveal>
+        <h1><span class="hero-gradient">Make an AI clone<br>of yourself</span></h1>
+        <p class="tagline">
+          Thinks like you. Talks like you. Builds like you.<br>
+          A 5-minute setup, then it learns forever.
+        </p>
 
-      <div class="install-box">
-        <span class="install-prompt">$</span>
-        <span class="install-code" id="install-cmd">curl -fsSL https://tn0123.github.io/clone-engine/install.sh | bash</span>
-        <button class="copy-btn" id="copy-btn" onclick="copyInstall()">Copy</button>
+        <div class="install-box">
+          <span class="install-prompt">$</span>
+          <span class="install-code" id="install-cmd">curl -fsSL https://tn0123.github.io/clone-engine/install.sh | bash</span>
+          <button class="copy-btn" id="copy-btn" onclick="copyInstall()">Copy</button>
+        </div>
       </div>
     </div>
   </div>
@@ -348,47 +490,59 @@
   <div class="container">
     <div class="section-divider"></div>
     <section>
-      <h2 data-reveal>What you get</h2>
-      <div class="features" data-reveal>
+      <div class="section-header" data-reveal>
+        <p class="section-label">What you get</p>
+        <h2>Everything you need to clone yourself</h2>
+        <p>A complete system for encoding your identity, memory, and decision-making into an AI that improves with every conversation.</p>
+      </div>
+      <div class="features-grid" data-reveal-stagger>
 
         <div class="feature">
-          <div class="feature-icon">&#x1f9e0;</div>
-          <div>
-            <h3>Your identity, encoded</h3>
-            <p>A setup interview captures how you think, communicate, and make decisions. High-signal questions that surface your actual personality.</p>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2a8 8 0 0 0-8 8c0 3.4 2.1 6.3 5 7.4V19a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1.6c2.9-1.1 5-4 5-7.4a8 8 0 0 0-8-8z"/><line x1="10" y1="22" x2="14" y2="22"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
           </div>
+          <h3>Your identity, encoded</h3>
+          <p>A setup interview captures how you think, communicate, and make decisions. High-signal questions that surface your actual personality.</p>
         </div>
 
         <div class="feature">
-          <div class="feature-icon">&#x1f4ac;</div>
-          <div>
-            <h3>Persistent memory</h3>
-            <p>Every conversation is indexed. The clone recalls past decisions, projects, and context so you never repeat yourself.</p>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
+          <h3>Persistent memory</h3>
+          <p>Every conversation is indexed. The clone recalls past decisions, projects, and context so you never repeat yourself.</p>
         </div>
 
         <div class="feature">
-          <div class="feature-icon">&#x26a1;</div>
-          <div>
-            <h3>Works inside Claude Code or Codex</h3>
-            <p>Runs as a CLI command in your terminal. Uses your existing AI subscription. No new API keys or accounts.</p>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
           </div>
+          <h3>Works inside Claude Code or Codex</h3>
+          <p>Runs as a CLI command in your terminal. Uses your existing AI subscription. No new API keys or accounts.</p>
         </div>
 
         <div class="feature">
-          <div class="feature-icon">&#x1f504;</div>
-          <div>
-            <h3>Self-updating</h3>
-            <p>The engine checks for updates automatically and applies them without touching your profile. Always current, zero effort.</p>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           </div>
+          <h3>Self-updating</h3>
+          <p>The engine checks for updates automatically and applies them without touching your profile. Always current, zero effort.</p>
         </div>
 
         <div class="feature">
-          <div class="feature-icon">&#x1f512;</div>
-          <div>
-            <h3>Fully local</h3>
-            <p>Your identity profile lives on your machine. Nothing is uploaded anywhere. You own your data.</p>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </div>
+          <h3>Fully local</h3>
+          <p>Your identity profile lives on your machine. Nothing is uploaded anywhere. You own your data.</p>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          </div>
+          <h3>Context-aware responses</h3>
+          <p>The clone understands your projects, preferences, and patterns. Every answer is grounded in how you actually work.</p>
         </div>
 
       </div>
@@ -399,35 +553,31 @@
   <div class="container">
     <div class="section-divider"></div>
     <section>
-      <h2 data-reveal>How it works</h2>
-      <div class="steps" data-reveal>
-        <div class="step">
+      <div class="section-header" data-reveal>
+        <p class="section-label">How it works</p>
+        <h2>Up and running in minutes</h2>
+        <p>Four steps from install to a fully personalized AI clone that gets smarter over time.</p>
+      </div>
+      <div class="steps-grid" data-reveal-stagger>
+        <div class="step-card">
           <div class="step-num">1</div>
-          <div class="step-body">
-            <h3>Install in one command</h3>
-            <p>The script detects your platform, checks dependencies, and sets up the engine at <code>~/.clone-engine</code>.</p>
-          </div>
+          <h3>Install in one command</h3>
+          <p>The script detects your platform, checks dependencies, and sets up the engine at <code>~/.clone-engine</code>.</p>
         </div>
-        <div class="step">
+        <div class="step-card">
           <div class="step-num">2</div>
-          <div class="step-body">
-            <h3>Answer the setup interview</h3>
-            <p>10 minutes of questions about how you think, talk, disagree, and build. Your answers become the clone's personality.</p>
-          </div>
+          <h3>Answer the setup interview</h3>
+          <p>10 minutes of questions about how you think, talk, disagree, and build. Your answers become the clone's personality.</p>
         </div>
-        <div class="step">
+        <div class="step-card">
           <div class="step-num">3</div>
-          <div class="step-body">
-            <h3>Get your CLI command</h3>
-            <p>A shell alias is added for your name (e.g. <code>alex</code>). Run it from any directory to start a session.</p>
-          </div>
+          <h3>Get your CLI command</h3>
+          <p>A shell alias is added for your name (e.g. <code>alex</code>). Run it from any directory to start a session.</p>
         </div>
-        <div class="step">
+        <div class="step-card">
           <div class="step-num">4</div>
-          <div class="step-body">
-            <h3>Memory compounds over time</h3>
-            <p>Every session is stored and indexed. The longer you use it, the more context it carries.</p>
-          </div>
+          <h3>Memory compounds over time</h3>
+          <p>Every session is stored and indexed. The longer you use it, the more context it carries.</p>
         </div>
       </div>
     </section>
@@ -437,19 +587,22 @@
   <div class="container">
     <div class="section-divider"></div>
     <section>
-      <h2 data-reveal>Requirements</h2>
-      <div class="requirements-grid" data-reveal>
+      <div class="section-header" data-reveal>
+        <p class="section-label">Requirements</p>
+        <h2>What you need</h2>
+      </div>
+      <div class="requirements-list" data-reveal>
         <div class="req-item">
-          <strong>Claude Code</strong> or <strong>Codex</strong> CLI
+          <span class="req-dot"></span>
+          <strong>Claude Code</strong>&nbsp;or&nbsp;<strong>Codex</strong>&nbsp;CLI
         </div>
         <div class="req-item">
-          Active <strong>API key</strong> for your CLI
-        </div>
-        <div class="req-item">
+          <span class="req-dot"></span>
           <strong>Python 3.10+</strong>
         </div>
         <div class="req-item">
-          <strong>macOS</strong> or <strong>Linux</strong>
+          <span class="req-dot"></span>
+          <strong>macOS</strong>&nbsp;or&nbsp;<strong>Linux</strong>
         </div>
       </div>
     </section>
@@ -470,6 +623,200 @@
   </div>
 
   <script>
+    // ── Neural network graph animation ──
+    (function() {
+      const canvas = document.getElementById('hero-canvas');
+      const ctx = canvas.getContext('2d');
+      let cw, ch, time = 0;
+      const nodes = [];
+      const edges = [];
+      const pulses = [];
+      const NODE_COUNT = 90;
+      const CONNECT_DIST = 200;
+      const green = [50, 215, 75];
+
+      function resize() {
+        canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+        canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        cw = canvas.offsetWidth;
+        ch = canvas.offsetHeight;
+      }
+
+      // Seed deterministic but organic-looking node positions
+      // Clustered toward center with some spread
+      function seed() {
+        nodes.length = 0;
+        edges.length = 0;
+        const rand = (function(s) {
+          return function() { s = (s * 16807 + 0) % 2147483647; return s / 2147483647; };
+        })(42);
+
+        // Brain silhouette (side profile): rounded dome on top,
+        // frontal lobe bulges forward, tapers back and down to brainstem,
+        // flatter bottom with slight cerebellum bump at rear
+        function inBrain(nx, ny) {
+          // nx: -1 (back) to 1 (front), ny: -1 (top) to 1 (bottom)
+          // Shift center slightly back so frontal lobe extends forward
+          const bx = nx;
+
+          // Nearly symmetrical tall oval, with just a hint of
+          // frontal lobe (right) and slight taper at back-bottom (left)
+          const topCurve = -0.88;
+          const bottomCurve = 0.58;
+
+          if (ny < topCurve || ny > bottomCurve) return false;
+
+          const yNorm = (ny - topCurve) / (bottomCurve - topCurve);
+          const widthEnvelope = Math.sin(yNorm * Math.PI) * 0.92;
+
+          // Very slight frontal bulge on the right
+          const frontBulge = (bx > 0) ? 0.06 * Math.exp(-ny * ny * 3) : 0;
+          // Very subtle taper at back-bottom only
+          const backTaper = (ny > 0.4 && bx < -0.5) ? 0.06 * (ny - 0.4) * Math.abs(bx + 0.5) : 0;
+
+          return Math.abs(bx) - frontBulge + backTaper < widthEnvelope;
+        }
+
+        for (let i = 0; i < NODE_COUNT; i++) {
+          let bx, by;
+          for (let tries = 0; tries < 50; tries++) {
+            const nx = (rand() - 0.5) * 2;
+            const ny = (rand() - 0.5) * 2;
+            if (inBrain(nx, ny)) {
+              bx = cw / 2 + nx * cw * 0.48;
+              by = ch / 2 + ny * ch * 0.55;
+              break;
+            }
+            bx = rand() * cw;
+            by = rand() * ch;
+          }
+          nodes.push({
+            x: bx,
+            y: by,
+            baseX: bx,
+            baseY: by,
+            r: 1.5 + rand() * 2.5,
+            phase: rand() * Math.PI * 2,
+            speed: 0.2 + rand() * 0.4,
+            drift: 8 + rand() * 16,
+            hub: rand() > 0.85, // ~15% are hub nodes
+          });
+        }
+
+        // Build edges between nearby nodes
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const dx = nodes[i].baseX - nodes[j].baseX;
+            const dy = nodes[i].baseY - nodes[j].baseY;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d < CONNECT_DIST) {
+              edges.push({ a: i, b: j, dist: d });
+            }
+          }
+        }
+      }
+
+      function spawnPulse() {
+        if (edges.length === 0) return;
+        const edge = edges[Math.floor(Math.random() * edges.length)];
+        pulses.push({
+          edge,
+          t: 0,
+          speed: 0.005 + Math.random() * 0.008,
+          forward: Math.random() > 0.5,
+        });
+      }
+
+      function draw() {
+        time += 0.01;
+        ctx.clearRect(0, 0, cw, ch);
+
+        // Update node positions (gentle drift)
+        for (const n of nodes) {
+          n.x = n.baseX + Math.sin(time * n.speed + n.phase) * n.drift;
+          n.y = n.baseY + Math.cos(time * n.speed * 0.7 + n.phase + 1) * n.drift * 0.6;
+        }
+
+        // Draw edges
+        for (const e of edges) {
+          const a = nodes[e.a], b = nodes[e.b];
+          const proximity = 1 - e.dist / CONNECT_DIST;
+          const opacity = 0.06 + proximity * 0.1;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = `rgba(255,255,255,${opacity})`;
+          ctx.lineWidth = 0.7;
+          ctx.stroke();
+        }
+
+        // Spawn pulses periodically
+        if (Math.random() < 0.12) spawnPulse();
+
+        // Draw and update pulses (data flowing along edges)
+        for (let i = pulses.length - 1; i >= 0; i--) {
+          const p = pulses[i];
+          p.t += p.speed;
+          if (p.t > 1) { pulses.splice(i, 1); continue; }
+
+          const a = nodes[p.edge.a], b = nodes[p.edge.b];
+          const t = p.forward ? p.t : 1 - p.t;
+          const px = a.x + (b.x - a.x) * t;
+          const py = a.y + (b.y - a.y) * t;
+          const glow = Math.sin(p.t * Math.PI); // fade in/out
+
+          ctx.beginPath();
+          ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${green[0]},${green[1]},${green[2]},${0.5 * glow})`;
+          ctx.fill();
+
+          // Glow
+          ctx.beginPath();
+          ctx.arc(px, py, 10, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${green[0]},${green[1]},${green[2]},${0.1 * glow})`;
+          ctx.fill();
+        }
+
+        // Draw nodes
+        for (const n of nodes) {
+          const breathe = 0.8 + 0.2 * Math.sin(time * 1.5 + n.phase);
+          const r = n.r * breathe;
+
+          if (n.hub) {
+            // Hub nodes: larger with green glow
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, r + 8, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${green[0]},${green[1]},${green[2]},0.06)`;
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,255,255,${0.3 + 0.15 * breathe})`;
+            ctx.fill();
+          } else {
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,255,255,${0.12 + 0.1 * breathe})`;
+            ctx.fill();
+          }
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      resize();
+      seed();
+      window.addEventListener('resize', () => {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        resize();
+        seed();
+      });
+      draw();
+      requestAnimationFrame(() => canvas.classList.add('loaded'));
+    })();
+
+    // ── Copy to clipboard ──
     function copyInstall() {
       const cmd = document.getElementById('install-cmd').textContent;
       const btn = document.getElementById('copy-btn');
@@ -499,7 +846,7 @@
       });
     }
 
-    // Scroll reveal
+    // ── Scroll reveal with stagger support ──
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -507,9 +854,9 @@
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.15 });
+    }, { threshold: 0.1 });
 
-    document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+    document.querySelectorAll('[data-reveal], [data-reveal-stagger]').forEach(el => observer.observe(el));
   </script>
 
 </body>
