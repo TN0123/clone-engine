@@ -71,26 +71,15 @@ echo -e "${DIM}  Platform: $PLATFORM${RESET}"
 echo ""
 echo -e "${CYAN}${BOLD}  Checking dependencies...${RESET}"
 
-HAS_CLI=false
-
 if command -v claude &>/dev/null; then
   echo -e "  ${GREEN}✓${RESET} claude (Claude Code) found"
-  HAS_CLI=true
-fi
-
-if command -v codex &>/dev/null; then
-  echo -e "  ${GREEN}✓${RESET} codex (OpenAI Codex) found"
-  HAS_CLI=true
-fi
-
-if [ "$HAS_CLI" = "false" ]; then
-  echo -e "  ${RED}✗${RESET} Neither 'claude' nor 'codex' CLI found"
+else
+  echo -e "  ${RED}✗${RESET} Claude Code CLI not found"
   echo ""
-  echo -e "${YELLOW}  You need one of:${RESET}"
-  echo -e "    • Claude Code: https://claude.ai/download"
-  echo -e "    • OpenAI Codex: npm install -g @openai/codex"
+  echo -e "${YELLOW}  Claude Code is required:${RESET}"
+  echo -e "    https://claude.ai/download"
   echo ""
-  echo -e "${RED}  Please install a CLI and re-run this installer.${RESET}"
+  echo -e "${RED}  Please install Claude Code and re-run this installer.${RESET}"
   exit 1
 fi
 
