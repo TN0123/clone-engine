@@ -450,15 +450,67 @@
       }
       .steps-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
       }
       .requirements-list {
         flex-direction: column;
+        gap: 10px;
       }
-      .hero { padding: 120px 0 80px; }
-      .hero h1 { font-size: 2.4rem; }
-      section { padding: 72px 0; }
-      .install-box { flex-direction: column; align-items: stretch; text-align: left; }
-      .copy-btn { align-self: flex-start; }
+      .req-item {
+        width: 100%;
+      }
+
+      .hero { padding: 88px 0 64px; }
+      .hero h1 {
+        font-size: 2.25rem;
+        letter-spacing: -0.035em;
+        margin-bottom: 20px;
+      }
+      .hero .tagline {
+        font-size: 1rem;
+        line-height: 1.6;
+        max-width: 100%;
+        margin-bottom: 36px;
+      }
+      /* Drop the explicit line break so the tagline flows naturally and avoids "Builds like / you." */
+      .hero .tagline br { display: none; }
+
+      section { padding: 56px 0; }
+      .section-header { margin-bottom: 32px; }
+      .section-header h2 { font-size: 1.55rem; }
+      .section-header p { font-size: 0.95rem; }
+
+      /* Install box: keep `$` and URL on one row, copy button stretched on a row beneath. */
+      .install-box {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-areas:
+          "prompt code"
+          "btn btn";
+        align-items: center;
+        gap: 12px 10px;
+        padding: 14px 16px;
+        text-align: left;
+      }
+      .install-prompt { grid-area: prompt; }
+      .install-code {
+        grid-area: code;
+        font-size: 0.78rem;
+        min-width: 0;
+      }
+      .copy-btn {
+        grid-area: btn;
+        align-self: stretch;
+        text-align: center;
+        padding: 10px 14px;
+      }
+
+      .feature { padding: 28px 24px; }
+      .feature h3 { font-size: 0.98rem; }
+      .step-card { padding: 26px 22px; }
+
+      footer { padding: 32px 0; }
+      .footer-links { gap: 20px; }
     }
   </style>
 </head>
@@ -630,8 +682,12 @@
       const nodes = [];
       const edges = [];
       const pulses = [];
-      const NODE_COUNT = 200;
-      const CONNECT_DIST = 140;
+      // Density target tuned to match the desktop look (~5500 sq px per node).
+      // NODE_COUNT and CONNECT_DIST are recomputed on every resize so the graph
+      // stays equally sparse on a phone as on a 27" monitor.
+      const TARGET_AREA_PER_NODE = 5500;
+      let NODE_COUNT = 200;
+      let CONNECT_DIST = 140;
       const green = [50, 215, 75];
 
       function resize() {
@@ -640,6 +696,12 @@
         ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
         cw = canvas.offsetWidth;
         ch = canvas.offsetHeight;
+
+        // Keep nodes-per-area constant across viewports.
+        NODE_COUNT = Math.max(40, Math.min(250, Math.round((cw * ch) / TARGET_AREA_PER_NODE)));
+        // Scale link distance to ~1.85× the average inter-node spacing,
+        // which matches the desktop ratio (140px / √(area/200) on a typical hero).
+        CONNECT_DIST = Math.sqrt((cw * ch) / NODE_COUNT) * 1.85;
       }
 
       // Seed evenly distributed nodes using Poisson disk sampling
